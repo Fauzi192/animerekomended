@@ -29,40 +29,43 @@ def build_model(df):
 knn_model, tfidf_matrix = build_model(anime_df)
 
 # ------------------------------
-# Setup
+# Setup Streamlit
 # ------------------------------
 st.set_page_config(page_title="🎥 Anime Recommender", layout="wide")
 st.sidebar.title("📚 Navigasi")
 page = st.sidebar.radio("Pilih Halaman", ["🏠 Home", "🔎 Rekomendasi"])
 
-# Init session state
-if "recommendations" not in st.session_state:
-    st.session_state.recommendations = []
-
 # ------------------------------
-# CSS Styling for readability
+# Custom CSS: Font merah
 # ------------------------------
 st.markdown("""
 <style>
-    .anime-card {
-        background-color: #f0f2f6;
+    .anime-card-red {
+        background-color: #fff8f8;
         padding: 16px;
         border-radius: 12px;
         margin-bottom: 12px;
-        border-left: 5px solid #4CAF50;
+        border-left: 5px solid #cc0000;
     }
-    .anime-header {
+    .anime-header-red {
         font-size: 20px;
         font-weight: 700;
         margin-bottom: 8px;
+        color: #cc0000;
     }
-    .anime-body {
+    .anime-body-red {
         font-size: 15px;
-        color: #333333;
+        color: #cc0000;
         line-height: 1.6;
     }
 </style>
 """, unsafe_allow_html=True)
+
+# ------------------------------
+# Inisialisasi session state
+# ------------------------------
+if "recommendations" not in st.session_state:
+    st.session_state.recommendations = []
 
 # ------------------------------
 # Halaman HOME
@@ -82,9 +85,9 @@ if page == "🏠 Home":
                 with cols[j]:
                     st.markdown(
                         f"""
-                        <div class="anime-card">
-                            <div class="anime-header">{anime['name']}</div>
-                            <div class="anime-body">
+                        <div class="anime-card-red">
+                            <div class="anime-header-red">{anime['name']}</div>
+                            <div class="anime-body-red">
                                 📚 <b>Genre:</b> {anime['genre']}<br>
                                 ⭐ <b>Rating:</b> {anime['rating']}
                             </div>
@@ -96,13 +99,13 @@ if page == "🏠 Home":
     st.subheader("🧠 Hasil Rekomendasi Sebelumnya")
     if st.session_state.recommendations:
         for item in reversed(st.session_state.recommendations):
-            st.markdown(f"<h5>🎯 Rekomendasi untuk: <i>{item['query']}</i></h5>", unsafe_allow_html=True)
+            st.markdown(f"<h5 style='color:#cc0000;'>🎯 Rekomendasi untuk: <i>{item['query']}</i></h5>", unsafe_allow_html=True)
             for anime in item["results"]:
                 st.markdown(
                     f"""
-                    <div class="anime-card" style="border-left-color: #2196F3;">
-                        <div class="anime-header">{anime['name']}</div>
-                        <div class="anime-body">
+                    <div class="anime-card-red">
+                        <div class="anime-header-red">{anime['name']}</div>
+                        <div class="anime-body-red">
                             📚 {anime['genre']}<br>
                             ⭐ {anime['rating']}
                         </div>
@@ -136,9 +139,9 @@ elif page == "🔎 Rekomendasi":
                 row = anime_df.iloc[i]
                 st.markdown(
                     f"""
-                    <div class="anime-card" style="border-left-color: #2196F3;">
-                        <div class="anime-header">{row['name']}</div>
-                        <div class="anime-body">
+                    <div class="anime-card-red">
+                        <div class="anime-header-red">{row['name']}</div>
+                        <div class="anime-body-red">
                             📚 {row['genre']}<br>
                             ⭐ {row['rating']}
                         </div>

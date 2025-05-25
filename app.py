@@ -40,6 +40,31 @@ if "recommendations" not in st.session_state:
     st.session_state.recommendations = []
 
 # ------------------------------
+# CSS Styling for readability
+# ------------------------------
+st.markdown("""
+<style>
+    .anime-card {
+        background-color: #f0f2f6;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        border-left: 5px solid #4CAF50;
+    }
+    .anime-header {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .anime-body {
+        font-size: 15px;
+        color: #333333;
+        line-height: 1.6;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ------------------------------
 # Halaman HOME
 # ------------------------------
 if page == "🏠 Home":
@@ -57,10 +82,12 @@ if page == "🏠 Home":
                 with cols[j]:
                     st.markdown(
                         f"""
-                        <div style="border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 10px; background-color: #f9f9f9;">
-                        <h5>{anime['name']}</h5>
-                        <p>📚 <strong>Genre:</strong> {anime['genre']}<br>
-                        ⭐ <strong>Rating:</strong> {anime['rating']}</p>
+                        <div class="anime-card">
+                            <div class="anime-header">{anime['name']}</div>
+                            <div class="anime-body">
+                                📚 <b>Genre:</b> {anime['genre']}<br>
+                                ⭐ <b>Rating:</b> {anime['rating']}
+                            </div>
                         </div>
                         """,
                         unsafe_allow_html=True
@@ -69,19 +96,20 @@ if page == "🏠 Home":
     st.subheader("🧠 Hasil Rekomendasi Sebelumnya")
     if st.session_state.recommendations:
         for item in reversed(st.session_state.recommendations):
-            st.markdown(f"🎯 <b>Rekomendasi untuk:</b> <i>{item['query']}</i>", unsafe_allow_html=True)
+            st.markdown(f"<h5>🎯 Rekomendasi untuk: <i>{item['query']}</i></h5>", unsafe_allow_html=True)
             for anime in item["results"]:
                 st.markdown(
                     f"""
-                    <div style="border-left: 4px solid #4CAF50; padding-left: 10px; margin-bottom: 10px;">
-                    <b>{anime['name']}</b><br>
-                    📚 {anime['genre']}<br>
-                    ⭐ {anime['rating']}
+                    <div class="anime-card" style="border-left-color: #2196F3;">
+                        <div class="anime-header">{anime['name']}</div>
+                        <div class="anime-body">
+                            📚 {anime['genre']}<br>
+                            ⭐ {anime['rating']}
+                        </div>
                     </div>
                     """,
                     unsafe_allow_html=True
                 )
-            st.markdown("---")
     else:
         st.info("Belum ada rekomendasi yang dicari. Silakan cari anime di halaman 'Rekomendasi'.")
 
@@ -108,10 +136,12 @@ elif page == "🔎 Rekomendasi":
                 row = anime_df.iloc[i]
                 st.markdown(
                     f"""
-                    <div style="border-left: 4px solid #2196F3; padding-left: 10px; margin-bottom: 10px;">
-                    <b>{row['name']}</b><br>
-                    📚 {row['genre']}<br>
-                    ⭐ {row['rating']}
+                    <div class="anime-card" style="border-left-color: #2196F3;">
+                        <div class="anime-header">{row['name']}</div>
+                        <div class="anime-body">
+                            📚 {row['genre']}<br>
+                            ⭐ {row['rating']}
+                        </div>
                     </div>
                     """,
                     unsafe_allow_html=True

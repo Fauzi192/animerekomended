@@ -31,15 +31,34 @@ knn_model, tfidf_matrix = build_model(anime_df)
 # ------------------------------
 # Setup Streamlit
 # ------------------------------
-st.set_page_config(page_title="🎥 Anime Recommender", layout="wide")
+st.set_page_config(page_title="Anime Recommender", layout="wide")
 st.sidebar.title("📚 Navigasi")
 page = st.sidebar.radio("Pilih Halaman", ["🏠 Home", "🔎 Rekomendasi"])
 
+if "recommendations" not in st.session_state:
+    st.session_state.recommendations = []
+
 # ------------------------------
-# Custom CSS: Font merah
+# Custom CSS & Header
 # ------------------------------
 st.markdown("""
 <style>
+    .anime-header {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 0px;
+    }
+    .anime-title {
+        font-size: 42px;
+        color: #cc0000;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .anime-subtitle {
+        font-size: 20px;
+        color: #444;
+        margin-bottom: 15px;
+    }
     .anime-card-red {
         background-color: #fff8f8;
         padding: 16px;
@@ -62,17 +81,22 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------------------
-# Inisialisasi session state
+# Tampilan Header
 # ------------------------------
-if "recommendations" not in st.session_state:
-    st.session_state.recommendations = []
+def show_header(title, subtitle):
+    st.image("banner_anime.jpg", use_column_width=True)
+    st.markdown(f"""
+        <div class="anime-header">
+            <div class="anime-title">{title}</div>
+            <div class="anime-subtitle">{subtitle}</div>
+        </div>
+    """, unsafe_allow_html=True)
 
 # ------------------------------
 # Halaman HOME
 # ------------------------------
 if page == "🏠 Home":
-    st.title("🏠 Halaman Home")
-    st.markdown("Selamat datang di aplikasi rekomendasi anime! ✨")
+    show_header("🏠 Halaman Home", "Selamat datang di aplikasi rekomendasi anime!")
 
     st.subheader("🔥 Top 10 Anime Berdasarkan Rating")
     top10 = anime_df.sort_values(by="rating", ascending=False).head(10)
@@ -120,8 +144,7 @@ if page == "🏠 Home":
 # Halaman REKOMENDASI
 # ------------------------------
 elif page == "🔎 Rekomendasi":
-    st.title("🔎 Halaman Rekomendasi Anime")
-    st.markdown("Cari anime favoritmu, dan dapatkan rekomendasi yang mirip berdasarkan genre 🎯")
+    show_header("🔎 Halaman Rekomendasi", "Temukan anime yang mirip dengan yang kamu suka 🎯")
 
     anime_name = st.text_input("Masukkan nama anime")
 

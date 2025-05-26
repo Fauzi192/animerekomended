@@ -84,7 +84,7 @@ st.markdown("""
 # Tampilan Header
 # ------------------------------
 def show_header(title, subtitle):
-    st.image("banner_anime.png", use_column_width=True)
+    st.image("banner_anime.jpg", use_container_width=True)
     st.markdown(f"""
         <div class="anime-header">
             <div class="anime-title">{title}</div>

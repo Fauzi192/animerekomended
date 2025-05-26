@@ -29,74 +29,47 @@ def build_model(df):
 knn_model, tfidf_matrix = build_model(anime_df)
 
 # ------------------------------
-# Setup Streamlit
+# Setup
 # ------------------------------
-st.set_page_config(page_title="Anime Recommender", layout="wide")
+st.set_page_config(page_title="🎥 Anime Recommender", layout="wide")
 st.sidebar.title("📚 Navigasi")
 page = st.sidebar.radio("Pilih Halaman", ["🏠 Home", "🔎 Rekomendasi"])
 
+# Init session state
 if "recommendations" not in st.session_state:
     st.session_state.recommendations = []
 
 # ------------------------------
-# Custom CSS & Header
+# CSS Styling for readability
 # ------------------------------
 st.markdown("""
 <style>
-    .anime-header {
-        text-align: center;
-        margin-top: 10px;
-        margin-bottom: 0px;
-    }
-    .anime-title {
-        font-size: 42px;
-        color: #cc0000;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-    .anime-subtitle {
-        font-size: 20px;
-        color: #444;
-        margin-bottom: 15px;
-    }
-    .anime-card-red {
-        background-color: #fff8f8;
+    .anime-card {
+        background-color: #f0f2f6;
         padding: 16px;
         border-radius: 12px;
         margin-bottom: 12px;
-        border-left: 5px solid #cc0000;
+        border-left: 5px solid #4CAF50;
     }
-    .anime-header-red {
+    .anime-header {
         font-size: 20px;
         font-weight: 700;
         margin-bottom: 8px;
-        color: #cc0000;
     }
-    .anime-body-red {
+    .anime-body {
         font-size: 15px;
-        color: #cc0000;
+        color: #333333;
         line-height: 1.6;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ------------------------------
-# Tampilan Header
-# ------------------------------
-def show_header(title, subtitle):
-    st.image("banner_anime.jpg", use_container_width=True)
-    st.markdown(f"""
-        <div class="anime-header">
-            <div class="anime-title">{title}</div>
-            <div class="anime-subtitle">{subtitle}</div>
-        </div>
-    """, unsafe_allow_html=True)
-
-# ------------------------------
 # Halaman HOME
 # ------------------------------
 if page == "🏠 Home":
-    show_header("🏠 Halaman Home", "Selamat datang di aplikasi rekomendasi anime!")
+    st.title("🏠 Halaman Home")
+    st.markdown("Selamat datang di aplikasi rekomendasi anime! ✨")
 
     st.subheader("🔥 Top 10 Anime Berdasarkan Rating")
     top10 = anime_df.sort_values(by="rating", ascending=False).head(10)
@@ -109,9 +82,9 @@ if page == "🏠 Home":
                 with cols[j]:
                     st.markdown(
                         f"""
-                        <div class="anime-card-red">
-                            <div class="anime-header-red">{anime['name']}</div>
-                            <div class="anime-body-red">
+                        <div class="anime-card">
+                            <div class="anime-header">{anime['name']}</div>
+                            <div class="anime-body">
                                 📚 <b>Genre:</b> {anime['genre']}<br>
                                 ⭐ <b>Rating:</b> {anime['rating']}
                             </div>
@@ -123,13 +96,13 @@ if page == "🏠 Home":
     st.subheader("🧠 Hasil Rekomendasi Sebelumnya")
     if st.session_state.recommendations:
         for item in reversed(st.session_state.recommendations):
-            st.markdown(f"<h5 style='color:#cc0000;'>🎯 Rekomendasi untuk: <i>{item['query']}</i></h5>", unsafe_allow_html=True)
+            st.markdown(f"<h5>🎯 Rekomendasi untuk: <i>{item['query']}</i></h5>", unsafe_allow_html=True)
             for anime in item["results"]:
                 st.markdown(
                     f"""
-                    <div class="anime-card-red">
-                        <div class="anime-header-red">{anime['name']}</div>
-                        <div class="anime-body-red">
+                    <div class="anime-card" style="border-left-color: #2196F3;">
+                        <div class="anime-header">{anime['name']}</div>
+                        <div class="anime-body">
                             📚 {anime['genre']}<br>
                             ⭐ {anime['rating']}
                         </div>
@@ -144,7 +117,8 @@ if page == "🏠 Home":
 # Halaman REKOMENDASI
 # ------------------------------
 elif page == "🔎 Rekomendasi":
-    show_header("🔎 Halaman Rekomendasi", "Temukan anime yang mirip dengan yang kamu suka 🎯")
+    st.title("🔎 Halaman Rekomendasi Anime")
+    st.markdown("Cari anime favoritmu, dan dapatkan rekomendasi yang mirip berdasarkan genre 🎯")
 
     anime_name = st.text_input("Masukkan nama anime")
 
@@ -162,9 +136,9 @@ elif page == "🔎 Rekomendasi":
                 row = anime_df.iloc[i]
                 st.markdown(
                     f"""
-                    <div class="anime-card-red">
-                        <div class="anime-header-red">{row['name']}</div>
-                        <div class="anime-body-red">
+                    <div class="anime-card" style="border-left-color: #2196F3;">
+                        <div class="anime-header">{row['name']}</div>
+                        <div class="anime-body">
                             📚 {row['genre']}<br>
                             ⭐ {row['rating']}
                         </div>

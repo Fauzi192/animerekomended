@@ -74,7 +74,7 @@ if page == "🏠 Home":
     st.title("🏠 Halaman Home")
     st.markdown("Selamat datang di aplikasi rekomendasi anime! ✨")
 
-    st.subheader("🔥 Top 10 Anime Berdasarkan Rating")
+    st.subheader("🔥 Top 10 Anime Paling Populer")
     top10 = anime_df.sort_values(by="rating", ascending=False).head(10)
 
     for i in range(0, len(top10), 2):

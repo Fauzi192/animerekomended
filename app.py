@@ -1,9 +1,12 @@
 import streamlit as st
+
+# HARUS DILETAKKAN PALING ATAS (setelah import streamlit)
+st.set_page_config(page_title="🎥 Anime Recommender", layout="wide")
+
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import NearestNeighbors
 
-st.set_page_config(page_title="🎥 Anime Recommender", layout="wide")
 # ------------------------------
 # Load data
 # ------------------------------
@@ -12,6 +15,7 @@ def load_data():
     df = pd.read_csv("anime.csv")
     df = df.dropna(subset=["name", "genre", "rating"])
     df = df.reset_index(drop=True)
+    df["name_lower"] = df["name"].str.lower()  # untuk pencarian case-insensitive
     return df
 
 anime_df = load_data()
@@ -30,14 +34,7 @@ def build_model(df):
 knn_model, tfidf_matrix = build_model(anime_df)
 
 # ------------------------------
-# Setup Streamlit
-# ------------------------------
-st.set_page_config(page_title="🎥 Anime Recommender", layout="wide")
-st.sidebar.title("📚 Navigasi")
-page = st.sidebar.radio("Pilih Halaman", ["🏠 Home", "🔎 Rekomendasi"])
-
-# ------------------------------
-# Custom CSS: Font merah
+# Custom CSS (Merah)
 # ------------------------------
 st.markdown("""
 <style>
@@ -61,6 +58,12 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+# ------------------------------
+# Setup Navigasi
+# ------------------------------
+st.sidebar.title("📚 Navigasi")
+page = st.sidebar.radio("Pilih Halaman", ["🏠 Home", "🔎 Rekomendasi"])
 
 # ------------------------------
 # Inisialisasi session state
@@ -124,17 +127,18 @@ elif page == "🔎 Rekomendasi":
     st.title("🔎 Halaman Rekomendasi Anime")
     st.markdown("Cari anime favoritmu, dan dapatkan rekomendasi yang mirip berdasarkan genre 🎯")
 
-    anime_name = st.text_input("Masukkan nama anime")
+    anime_name_input = st.text_input("Masukkan nama anime")
 
-    if anime_name:
-        if anime_name not in anime_df['name'].values:
+    if anime_name_input:
+        anime_name = anime_name_input.strip().lower()
+        if anime_name not in anime_df['name_lower'].values:
             st.error("Anime tidak ditemukan. Silakan coba judul lain.")
         else:
-            index = anime_df[anime_df['name'] == anime_name].index[0]
+            index = anime_df[anime_df['name_lower'] == anime_name].index[0]
             query_vec = tfidf_matrix[index]
             distances, indices = knn_model.kneighbors(query_vec, n_neighbors=6)
 
-            st.success(f"🎉 Rekomendasi untuk: {anime_name}")
+            st.success(f"🎉 Rekomendasi untuk: {anime_df.iloc[index]['name']}")
             results = []
             for i in indices[0][1:]:  # Lewati anime itu sendiri
                 row = anime_df.iloc[i]
@@ -158,6 +162,6 @@ elif page == "🔎 Rekomendasi":
 
             # Simpan hasil pencarian
             st.session_state.recommendations.append({
-                "query": anime_name,
+                "query": anime_df.iloc[index]['name'],
                 "results": results
             })

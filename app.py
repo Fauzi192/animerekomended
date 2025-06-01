@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import NearestNeighbors
 
+st.set_page_config(page_title="🎥 Anime Recommender", layout="wide")
 # ------------------------------
 # Load data
 # ------------------------------
